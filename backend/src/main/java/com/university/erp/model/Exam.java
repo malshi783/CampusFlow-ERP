@@ -20,7 +20,6 @@ public class Exam
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name="examId",nullable=false)
     private Course course;
 
 

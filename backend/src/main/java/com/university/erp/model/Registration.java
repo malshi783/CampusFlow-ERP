@@ -29,7 +29,7 @@ public class Registration {
     private Course course;
 
 
-    @Column(name ="registration_id", nullable=false)
+
     private LocalDate registrationDate;
 
     public Registration(){
