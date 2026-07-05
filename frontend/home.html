@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University ERP - Home Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #003322;
+            --primary-green: #004d33;
+            --accent-green: #008055;
+            --bg-light: #f4f7f6;
+            --white: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+            
+            /* Card Color Palettes matching your reference layout styles */
+            --color-student: #ffb800;
+            --color-course: #ff5c5c;
+            --color-attendance: #925cff;
+            --color-marks: #2da1f7;
+            --color-dashboard: #00c288;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Header Bar */
+        .top-navbar {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background-color: #cc3333;
+            color: var(--white);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #b32424;
+        }
+
+        /* Centralized Main Portal Content Wrapper */
+        .portal-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .portal-header {
+            margin-bottom: 35px;
+        }
+
+        .portal-header h1 {
+            margin: 0;
+            font-size: 32px;
+            color: var(--primary-dark);
+        }
+
+        .portal-header p {
+            margin: 8px 0 0 0;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        /* Grid Configuration System */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Grid Item Navigation Link Setup */
+        .module-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        /* Individual Interactive Color Card Architecture */
+        .module-card {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-sizing: border-box;
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+        }
+
+        /* Smooth floating lift action on user cursor hover */
+        .module-link:hover .module-card {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        /* Top metadata layout within card */
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            z-index: 2;
+        }
+
+        .module-tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 4px 10px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.12);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background-color: rgba(255, 255, 255, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            font-size: 22px;
+        }
+
+        /* Content Text Segment Area */
+        .card-body {
+            margin-top: auto;
+            z-index: 2;
+            color: var(--white);
+        }
+
+        .card-body h2 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .card-body p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        /* Action Launch Button Arrow indicator */
+        .launch-indicator {
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            font-size: 14px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+
+        .module-link:hover .launch-indicator {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Dynamic Custom Color Assignment Classes */
+        .m-dashboard { background: linear-gradient(135deg, #00db9b, var(--color-dashboard)); }
+        .m-student   { background: linear-gradient(135deg, #ffca28, var(--color-student)); }
+        .m-course    { background: linear-gradient(135deg, #ff7676, var(--color-course)); }
+        .m-attendance{ background: linear-gradient(135deg, #a67eff, var(--color-attendance)); }
+        .m-marks     { background: linear-gradient(135deg, #54b4ff, var(--color-marks)); }
+    </style>
+</head>
+<body>
+
+    <header class="top-navbar">
+        <div class="brand">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>University ERP Management Portal</span>
+        </div>
+        <div class="user-profile">
+            <span>Welcome, <strong>Yohani</strong></span>
+            <a href="login.html" class="logout-btn">Logout</a>
+        </div>
+    </header>
+
+    <main class="portal-container">
+        <div class="portal-header">
+            <h1>System Applications Hub</h1>
+            <p>Select a workspace module card below to manage records, compile operations, or look up diagnostics.</p>
+        </div>
+
+        <div class="modules-grid">
+            
+            <a href="dashboard.html" class="module-link">
+                <div class="module-card m-dashboard">
+                    <div class="card-top">
+                        <span class="module-tag">Analytics</span>
+                        <div class="icon-box"><i class="fa-solid fa-chart-pie"></i></div>
+                    </div>
+                    <div class="card-body">
+                        <h2>Main Board</h2>
+                        <p>View administrative statistics graphs, growth rate tracking configurations, and logs.</p>
+                    </div>
+                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="student.html" class="module-link">
+                <div class="module-card m-student">
+                    <div class="card-top">
+                        <span class="module-tag">Registry</span>
+                        <div class="icon-box"><i class="fa-solid fa-user-graduate"></i></div>
+                    </div>
+                    <div class="card-body">
+                        <h2>Student Enrollment</h2>
+                        <p>Register new academic applicants, query profiles, and manage identity parameters.</p>
+                    </div>
+                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="course-registration.html" class="module-link">
+                <div class="module-card m-course">
+                    <div class="card-top">
+                        <span class="module-tag">Curriculum</span>
+                        <div class="icon-box"><i class="fa-solid fa-book-bookmark"></i></div>
+                    </div>
+                    <div class="card-body">
+                        <h2>Course Setup</h2>
+                        <p>Configure faculty module streams, track prerequisites, and organize active lecture lists.</p>
+                    </div>
+                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="attendance.html" class="module-link">
+                <div class="module-card m-attendance">
+                    <div class="card-top">
+                        <span class="module-tag">Operations</span>
+                        <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                    </div>
+                    <div class="card-body">
+                        <h2>Mark Attendance</h2>
+                        <p>Log active classroom check-in stats, record leaves, and audit global tracking metrics.</p>
+                    </div>
+                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <a href="exam-marks.html" class="module-link">
+                <div class="module-card m-marks">
+                    <div class="card-top">
+                        <span class="module-tag">Evaluation</span>
+                        <div class="icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                    </div>
+                    <div class="card-body">
+                        <h2>Exam Marks</h2>
+                        <p>Process grade points entry forms, calculate GPA pass rates, and review final transcripts.</p>
+                    </div>
+                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+</body>
+</html>
