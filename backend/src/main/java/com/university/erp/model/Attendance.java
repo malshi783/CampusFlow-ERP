@@ -1,46 +1,31 @@
-package com.university.erp.model;
-
-
+package com.university.erp.model;;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 
-@Entity
-@Table(name="attendance")
-@Getter
 @Setter
-
+@Getter
+@Entity
+@Table(name = "attendance")
 public class Attendance {
 
+    // Getters and Setters
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "attendance_id")
     private Long attendanceId;
 
-    @ManyToOne
-    @JoinColumn(name="student_id",nullable=false)
-    private Student student;
+    @Column(name = "student_id", nullable = false)
+    private Long studentId;
 
-    @ManyToOne
-    @JoinColumn(name="course_id",nullable=false)
-    private Course course;
+    @Column(name = "course_id", nullable = false)
+    private Long courseId;
 
-    @Column(name="attendance_date",nullable=false)
+    @Column(name = "attendance_date", nullable = false)
     private LocalDate attendanceDate;
 
-    @Column(name="status",nullable=false)
-    private String status;
-    //Store Present and Absent
+    @Column(name = "status", nullable = false)
+    private String status; // 'Present' හෝ 'Absent'
 
-    public Attendance(){
-
-    }
-
-    public Attendance(Student student, Course course, LocalDate attendanceDate, String status){
-        this.student = student;
-        this.course = course;
-        this.attendanceDate = attendanceDate;
-        this.status = status;
-    }
 }
