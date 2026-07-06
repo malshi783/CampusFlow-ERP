@@ -1,10 +1,572 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University ERP - Examination Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* මූලික වර්ණ සහ විචල්‍යයන් (Theme Configurations) */
+        :root {
+            --primary-dark: #003322;   /* තද කොළ පැහැති සයිඩ්බාර් එක සඳහා */
+            --primary-green: #004d33;  /* ප්‍රධාන වර්ණ සඳහා */
+            --accent-green: #008055;   /* Hover විලාසිතා සඳහා */
+            --bg-light: #f4f7f6;       /* ප්‍රධාන පසුබිම් වර්ණය */
+            --white: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+            --status-pass: #008055;
+            --sem-badge-bg: #e6f2ed;   /* සෙමෙස්ටර් මාතෘකා පසුබිම */
+        }
+
+        /* මුළු පිටුවේම පිරිසැකසුම (Layout Reset) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            display: flex; 
+            min-height: 100vh;
+        }
+
+        /* වම්පස ඇති සංචාලන තීරුව (Sidebar Navigation Styles) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--primary-dark);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .sidebar .brand {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 10px 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            color: #b3ccc0;
+            text-decoration: none;
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 4px solid #00ffaa;
+            padding-left: 21px;
+        }
+
+        .sidebar-footer {
+            padding: 20px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            display: block;
+            background-color: #cc3333;
+            color: var(--white);
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #b32424;
+        }
+
+        /* දකුණුපස ඇති ප්‍රධාන අන්තර්ගතය (Main Content Container) */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px;
+            width: calc(100% - 260px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            color: var(--primary-dark);
+        }
+
+        /* Dashboard ව්‍යුහය (Split Layout) */
+        .exam-dashboard-grid {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* පොදු සුදු පැහැති කාඩ්පත් විලාසිතාව (Card Style) */
+        .ui-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* වම්පස පෝරමයේ පැනලය (Form Panel) */
+        .form-panel {
+            flex: 0 0 320px;
+        }
+
+        /* දකුණුපස වගු අඩංගු පැනලය (Tables Panel) */
+        .tables-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .ui-card h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: var(--primary-green);
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ui-card h2 .view-all-link {
+            font-size: 13px;
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .ui-card h2 .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        /* පෝරමයේ මූලද්‍රව්‍ය (Form Elements) */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background-color: var(--white);
+        }
+
+        .submit-btn {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--accent-green);
+        }
+
+        /* වගු සඳහා විලාසිතා (Data Table Styles) */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #f8faf9;
+            color: var(--text-muted);
+            padding: 12px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* වාර (Semester) වෙන් කර හඳුනාගැනීමට යොදන විශේෂ Row එක */
+        .semester-header {
+            background-color: var(--sem-badge-bg) !important;
+            font-weight: bold;
+            color: var(--primary-green);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .semester-header td {
+            padding: 8px 14px !important;
+            border-bottom: 2px solid rgba(0, 77, 51, 0.15) !important;
+        }
+
+        .data-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13.5px;
+            white-space: nowrap;
+        }
+
+        .data-table tr:hover:not(.semester-header) {
+            background-color: #fcfdfe;
+        }
+
+        /* Pass Status බැජ් එක */
+        .badge-pass {
+            background-color: rgba(0, 128, 85, 0.1);
+            color: var(--status-pass);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* ජංගම දුරකථන සහ කුඩා තිර සඳහා අනුකූලතාව (Responsive Design) */
+        @media (max-width: 1024px) {
+            .exam-dashboard-grid {
+                flex-direction: column;
+            }
+            .form-panel {
+                width: 100%;
+                flex: none;
+            }
+            .main-content {
+                width: calc(100% - 260px);
+            }
+        }
+    </style>
 </head>
 <body>
 
+    <aside class="sidebar">
+        <div class="brand">
+            <span>University ERP</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="student.html">Students</a></li>
+            <li><a href="course-registration.html">Courses</a></li>
+            <li><a href="attendance.html">Attendance</a></li>
+            <li><a href="exam-marks.html" class="active">Marks</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="login.html" class="logout-btn">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Examination Management</h1>
+        </div>
+
+        <div class="exam-dashboard-grid">
+            
+            <section class="ui-card form-panel">
+                <h2>Exam Marks Entry</h2>
+                <form id="marksForm">
+                    <div class="form-group">
+                        <label for="studentId">Student ID Number</label>
+                        <input type="text" id="studentId" placeholder="Ex: STU1001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="ERP">Business Process and ERP</option>
+                            <option value="WEB">Introduction to Software Engineering</option>
+                            <option value="DBMS">Human computer Interaction</option>
+                            <option value="DBMS">Algorithms and complexity</option>
+                            <option value="DBMS">Software Architecture</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="marks">Marks (0 - 100)</label>
+                        <input type="number" id="marks" min="0" max="100" placeholder="Enter evaluation marks" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Add Marks</button>
+                </form>
+            </section>
+
+            <div class="tables-panel">
+                
+                <section class="ui-card">
+                    <h2>Upcoming Exams <a href="#" class="view-all-link">View All</a></h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Module</th>
+                                    <th>Faculty</th>
+                                    <th>Room</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="semester-header">
+                                    <td colspan="4"><i class="fa-solid fa-calendar-days"></i> 2nd Year 1st Sem</td>
+                                </tr>
+                                <tr>
+                                    <td>05 Aug 2026</td>
+                                    <td>Business Process and ERP</td>
+                                    <td>FOC</td>
+                                    <td>Room 301</td>
+                                </tr>
+                                <tr>
+                                    <td>03 Aug 2026</td>
+                                    <td>Introduction to Software Engineering</td>
+                                    <td>FOC</td>
+                                    <td>Room 302</td>
+                                </tr>
+                                <tr>
+                                    <td>10 Aug 2026</td>
+                                    <td>Human Computer Interaction</td>
+                                    <td>FOB</td>
+                                    <td>Room 303</td>
+                                </tr>
+                                <tr>
+                                    <td>07 Aug 2026</td>
+                                    <td>Algorithm and Complexity</td>
+                                    <td>FOC</td>
+                                    <td>Room 303</td>
+                                </tr>
+                                <tr>
+                                    <td>30 July 2026</td>
+                                    <td>Software Architecture</td>
+                                    <td>FOC</td>
+                                    <td>Room 303</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="ui-card">
+                    <h2>Recent Exams</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th>Obtained Marks</th>
+                                    <th>Grade</th>
+                                    <th>Grade Point</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="semester-header">
+                                    <td colspan="5"><i class="fa-solid fa-graduation-cap"></i> 1st Year 1st Sem</td>
+                                </tr>
+                                <tr>
+                                    <td>Introduction to Sustainability</td>
+                                    <td>85</td>
+                                    <td><strong>A</strong></td>
+                                    <td>4.00</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Programming Fundamental</td>
+                                    <td>78</td>
+                                    <td><strong>B+</strong></td>
+                                    <td>3.50</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Introduction to Computer Science</td>
+                                    <td>78</td>
+                                    <td><strong>B+</strong></td>
+                                    <td>3.50</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Database Management Systems</td>
+                                    <td>78</td>
+                                    <td><strong>B+</strong></td>
+                                    <td>3.50</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Personal Development</td>
+                                    <td>78</td>
+                                    <td><strong>B+</strong></td>
+                                    <td>3.50</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Mathematics for Computing</td>
+                                    <td>78</td>
+                                    <td><strong>B+</strong></td>
+                                    <td>3.50</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Academic Writing and Computing</td>
+                                    <td>78</td>
+                                    <td><strong>B+</strong></td>
+                                    <td>3.50</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+
+                                <tr class="semester-header">
+                                    <td colspan="5"><i class="fa-solid fa-graduation-cap"></i> 1st Year 2nd Sem</td>
+                                </tr>
+                                <tr>
+                                    <td>Object Oriented Programming with Java</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Web Application Development</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Data Communication and Network</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Computer Architecture</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Algorithms and Data Structures</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+
+                                <tr class="semester-header">
+                                    <td colspan="5"><i class="fa-solid fa-graduation-cap"></i> 2nd Year 1st Sem</td>
+                                </tr>
+                                <tr>
+                                    <td>Computer Networks</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Operating Systems</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Statistics for Computing</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>System Analysis and Design</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Development Enterprise Applications 1</td>
+                                    <td>81</td>
+                                    <td><strong>A-</strong></td>
+                                    <td>3.70</td>
+                                    <td><span class="badge-pass">Pass</span></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('marksForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const marks = document.getElementById('marks').value;
+            const stu = document.getElementById('studentId').value;
+
+            alert(`Student ${stu} has been successfully added to the system with marks ${marks}.`);
+            document.getElementById('marksForm').reset();
+        });
+    </script>
 </body>
 </html>

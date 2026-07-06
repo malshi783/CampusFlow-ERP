@@ -12,14 +12,48 @@ public class DashboardController {
     @Autowired
     private StudentRepository studentRepository;
 
-
+    // 1. Home Page
     @GetMapping("/")
-    public String viewDashboard(Model model) {
+    public String showHomePage() {
+        return "home";
+    }
 
-        //Fetch all students from database and send them to the UI
+    // 2. Login Page
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "login";
+    }
+
+    // 3. Main Dashboard
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model) {
         model.addAttribute("students", studentRepository.findAll());
         return "dashboard";
     }
 
+    // 4. Student Management
+    @GetMapping("/student")
+    public String showStudentPage(Model model) {
+        model.addAttribute("student", new com.university.erp.model.Student());
+        model.addAttribute("students", studentRepository.findAll());
+        return "student";
+    }
 
+    // 5. Course Registration
+    @GetMapping("/course-registration")
+    public String showCourseRegistrationForm() {
+        return "course-registration";
+    }
+
+    // 6. Attendance
+    @GetMapping("/attendance")
+    public String showAttendanceForm() {
+        return "attendance";
+    }
+
+    // 7. Exam Marks
+    @GetMapping("/exam-marks")
+    public String showExamMarksForm() {
+        return "exam-marks";
+    }
 }

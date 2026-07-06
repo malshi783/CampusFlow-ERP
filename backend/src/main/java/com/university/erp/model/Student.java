@@ -17,11 +17,11 @@ public class Student {
     private Long studentId;
 
     @Setter
-    @Column(name = "firstname", nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Setter
-    @Column(name = "lastname", nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Setter

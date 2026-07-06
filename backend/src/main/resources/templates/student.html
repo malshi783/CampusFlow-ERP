@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="si" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University ERP - Course Registration</title>
+    <title>University ERP - Student Management</title>
     <style>
         /* මූලික වර්ණ සහ විචල්‍යයන් (Theme Configurations) */
         :root {
             --primary-dark: #003322;   /* තද කොළ පැහැති සයිඩ්බාර් එක සඳහා */
-            --primary-green: #004d33;  /* ප්‍රධාන වර්ණ සඳහා */
+            --primary-green: #004d33;  /* ප්‍රධාන බොත්තම් සහ ලින්ක්ස් සඳහා */
             --accent-green: #008055;   /* Hover විලාසිතා සඳහා */
             --bg-light: #f4f7f6;       /* ප්‍රධාන පසුබිම් වර්ණය */
             --white: #ffffff;
@@ -41,7 +41,6 @@
             left: 0;
             padding: 20px 0;
             box-sizing: border-box;
-            z-index: 100;
         }
 
         .sidebar .brand {
@@ -115,6 +114,9 @@
 
         /* පිටුවේ ඉහළ ශීර්ෂය (Header Area) */
         .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
         }
 
@@ -124,15 +126,14 @@
             color: var(--primary-dark);
         }
 
-        /* පෝරමය අඩංගු සුදු පැහැති කාඩ්පත (Card Design) */
+        /* පෝරමය සහ ලැයිස්තුව අඩංගු සුදු පැහැති කාඩ්පත් (Card Design) */
         .ui-card {
             background-color: var(--white);
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             padding: 30px;
-            max-width: 800px;
+            margin-bottom: 30px;
             border: 1px solid var(--border-color);
-            box-sizing: border-box;
         }
 
         .ui-card h2 {
@@ -144,21 +145,16 @@
             padding-bottom: 12px;
         }
 
-        /* පෝරමයේ Grid සැකසුම (Form Grid) */
+        /* පෝරමයේ Grid සැකසුම (Two-Column Form Grid) */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
-            margin-bottom: 24px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-        }
-
-        .form-group.full-width {
-            grid-column: span 2;
         }
 
         .form-group label {
@@ -176,7 +172,6 @@
             background-color: #fafafa;
             transition: border-color 0.3s;
             box-sizing: border-box;
-            width: 100%;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -185,44 +180,11 @@
             background-color: var(--white);
         }
 
-        /* විෂයන් තෝරාගැනීමේ කොටස (Checkbox Group Styles) */
-        .checkbox-group {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #fafafa;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-
-        .checkbox-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--primary-green); /* Checkbox එකට කොළ පැහැය ලබාදීම */
-        }
-
-        .checkbox-item label {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
-            cursor: pointer;
-        }
-
-        /* බොත්තම් විලාසිතා (Button Container & Style) */
+        /* බොත්තම් විලාසිතා (Button Styles) */
         .btn-container {
             display: flex;
             justify-content: flex-end;
-            margin-top: 10px;
+            margin-top: 25px;
         }
 
         .submit-btn {
@@ -240,96 +202,137 @@
         .submit-btn:hover {
             background-color: var(--accent-green);
         }
+
+        /* ශිෂ්‍ය දත්ත වගුවේ විලාසිතා (Data Table Styles) */
+        .data-table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #f8faf9;
+            color: var(--text-muted);
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .data-table tr:hover {
+            background-color: #fcfdfe;
+        }
+
+        /* සක්‍රීය/අක්‍රීය තත්ත්ව ලේබල් (Status Badges) */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active {
+            background-color: #e6f7ed;
+            color: #1e7e34;
+        }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="brand">
-            <span>University ERP</span>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="student.html">Students</a></li>
-            <li><a href="course-registration.html" class="active">Courses</a></li>
-            <li><a href="attendance.html">Attendance</a></li>
-            <li><a href="exam-marks.html">Marks</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <a href="login.html" class="logout-btn">Logout</a>
-        </div>
-    </aside>
+<aside class="sidebar">
+    <div class="brand">
+        <span>University ERP</span>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/student" class="active">Students</a></li>
+        <li><a href="/course-registration">Courses</a></li>
+        <li><a href="/attendance">Attendance</a></li>
+        <li><a href="/exam-marks">Marks</a></li>
+    </ul>
+    <div class="sidebar-footer">
+        <a href="/login" class="logout-btn">Logout</a>
+    </div>
+</aside>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1>Course Registration</h1>
-        </div>
+<main class="main-content">
+    <div class="page-header">
+        <h1>Students Management</h1>
+    </div>
 
-        <section class="ui-card">
-            <h2>Register New Courses for Student</h2>
-            
-            <form id="courseRegForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="searchStuID">Student ID Number</label>
-                        <input type="text" id="searchStuID" placeholder="Ex: STU1001" required>
-                    </div>
+    <section class="ui-card">
+        <h2>New Student Enrollment Form</h2>
 
-                    <div class="form-group">
-                        <label for="semester">Semester</label>
-                        <select id="semester" required>
-                            <option value="">Select Semester</option>
-                            <option value="Y1S1">Year 1 - Semester 1</option>
-                            <option value="Y1S2">Year 1 - Semester 2</option>
-                            <option value="Y2S1">Year 2 - Semester 1</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Select Subjects</label>
-                        <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="sub1" value="Enterprise Resource Planning">
-                                <label for="sub1">Business Process and ERP</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="sub2" value="Web Application Development">
-                                <label for="sub2">Introduction to Software Engineering</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="sub3" value="Database Management Systems">
-                                <label for="sub3">Algorithms and Complexity</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="sub4" value="Software Architecture">
-                                <label for="sub4">Software Architecture</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="sub4" value="Software Architecture">
-                                <label for="sub4">Human Computer Interaction</label>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Java Model variables වලට අනුව සකසන ලද Form එක -->
+        <form th:action="@{/students/add}" th:object="${student}" method="POST" id="studentForm">
+            <div class="form-grid">
+                <!-- First Name -->
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" th:field="*{firstName}" placeholder="Enter first name" required>
                 </div>
 
-                <div class="btn-container">
-                    <button type="submit" class="submit-btn">Register Courses</button>
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" th:field="*{lastName}" placeholder="Enter last name" required>
                 </div>
-            </form>
-        </section>
-    </main>
 
-    <script>
-        // ලියාපදිංචි කිරීමේ පාලක කේතය (Course Registration Event Handler)
-        document.getElementById('courseRegForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // පිටුව Reload වීම වැළැක්වීම
-            
-            const studentId = document.getElementById('searchStuID').value;
-            
-            // සාර්ථක පණිවිඩය පෙන්වීම සහ Form එක reset කිරීම
-            alert(`Student ${studentId} has been successfully registered for the selected courses.`);
-            document.getElementById('courseRegForm').reset();
-        });
-    </script>
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" th:field="*{email}" placeholder="Enter email address" required>
+                </div>
+
+                <!-- Enrollment Date -->
+                <div class="form-group">
+                    <label for="enrollmentDate">Enrollment Date</label>
+                    <input type="date" id="enrollmentDate" th:field="*{enrollmentDate}" required>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button type="submit" class="submit-btn">Register Student</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="ui-card">
+        <h2>Registered Student Records</h2>
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Enrollment Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                <!-- ඩේටාබේස් එකේ දත්ත පෙන්වන නිවැරදි Thymeleaf Loop එක -->
+                <tr th:each="st : ${students}">
+                    <td th:text="${st.studentId}">1</td>
+                    <td th:text="${st.firstName} + ' ' + ${st.lastName}">John Smith</td>
+                    <td th:text="${st.email}">john.smith@email.com</td>
+                    <td th:text="${st.enrollmentDate}">2026-07-05</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 </body>
 </html>
