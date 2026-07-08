@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="si" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,25 +10,25 @@
             --primary-dark: #003322;   /* තද කොළ පැහැති සයිඩ්බාර් එක සඳහා */
             --primary-green: #004d33;  /* ප්‍රධාන වර්ණ සඳහා */
             --accent-green: #008055;   /* Hover විලාසිතා සඳහා */
-            --bg-light: #f4f7f6;       /* ප්‍රධාන පසුබිම් වර්ණය */
+            --bg-light: #f4f7f6;       /* ribbons */
             --white: #ffffff;
             --text-main: #333333;
             --text-muted: #666666;
             --border-color: #e0e0e0;
         }
 
-        /* මුළු පිටුවේම පිරිසැකසුම (Layout Reset) */
+        /* මුළු පිටුවේම පිරිසැකසුම */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-light);
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            display: flex; /* Sidebar සහ Main Content එක ළඟින් තැබීමට */
+            display: flex;
             min-height: 100vh;
         }
 
-        /* වම්පස ඇති සංචාලන තීරුව (Sidebar Navigation Styles) */
+        /* Sidebar Navigation Styles */
         .sidebar {
             width: 260px;
             background-color: var(--primary-dark);
@@ -75,7 +75,6 @@
             transition: all 0.3s ease;
         }
 
-        /* දැනට සක්‍රීය පිටුව සහ Hover විලාසිතාව */
         .sidebar-menu a:hover, .sidebar-menu a.active {
             background-color: rgba(255, 255, 255, 0.1);
             color: var(--white);
@@ -105,15 +104,14 @@
             background-color: #b32424;
         }
 
-        /* දකුණුපස ඇති ප්‍රධාන අන්තර්ගතය (Main Content Container) */
+        /* Main Content Container */
         .main-content {
-            margin-left: 260px; /* Sidebar එකට ඉඩ තැබීම සඳහා */
+            margin-left: 260px;
             flex-grow: 1;
             padding: 40px;
             box-sizing: border-box;
         }
 
-        /* පිටුවේ ඉහළ ශීර්ෂය (Header Area) */
         .page-header {
             margin-bottom: 30px;
         }
@@ -124,7 +122,7 @@
             color: var(--primary-dark);
         }
 
-        /* පෝරමය සහ ලැයිස්තුව අඩංගු සුදු පැහැති කාඩ්පත (Card Design) */
+        /* Card Design */
         .ui-card {
             background-color: var(--white);
             border-radius: 12px;
@@ -149,7 +147,7 @@
             font-weight: 500;
         }
 
-        /* පැමිණීමේ වගුවේ විලාසිතා (Data Table Styles) */
+        /* Data Table Styles */
         .data-table-container {
             overflow-x: auto;
             margin-top: 15px;
@@ -181,7 +179,7 @@
             background-color: #fcfdfe;
         }
 
-        /* රේඩියෝ බොත්තම් පෙළගැස්ම (Radio Group Styles) */
+        /* Radio Group Styles */
         .radio-group {
             display: flex;
             gap: 20px;
@@ -202,10 +200,9 @@
             width: 16px;
             height: 16px;
             cursor: pointer;
-            accent-color: var(--primary-green); /* රේඩියෝ බොත්තම් සඳහා කොළ පැහැය ලබාදීම */
+            accent-color: var(--primary-green);
         }
 
-        /* බොත්තම් විලාසිතා (Button Container & Style) */
         .btn-container {
             display: flex;
             justify-content: flex-end;
@@ -231,77 +228,75 @@
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="brand">
-            <span>University ERP</span>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="student.html">Students</a></li>
-            <li><a href="course-registration.html">Courses</a></li>
-            <li><a href="attendance.html" class="active">Attendance</a></li>
-            <li><a href="exam-marks.html">Marks</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <a href="login.html" class="logout-btn">Logout</a>
-        </div>
-    </aside>
+<aside class="sidebar">
+    <div class="brand">
+        <span>University ERP</span>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/student">Students</a></li>
+        <li><a href="/course-registration">Courses</a></li>
+        <li><a href="/attendance" class="active">Attendance</a></li>
+        <li><a href="/exams">Marks</a></li>
+    </ul>
+    <div class="sidebar-footer">
+        <a href="/login" class="logout-btn">Logout</a>
+    </div>
+</aside>
 
-    <main class="main-content">
-        <div class="page-header">
-            <h1>Attendance Management</h1>
-        </div>
+<main class="main-content">
+    <div class="page-header">
+        <h1>Attendance Management</h1>
+    </div>
 
-        <section class="ui-card">
-            <h2>Daily Attendance Sheet</h2>
-            <div class="subject-tag">Subject: Enterprise Resource Planning (ERP)</div>
+    <section class="ui-card">
+        <h2>Daily Attendance Sheet</h2>
+        <div class="subject-tag">Subject: Enterprise Resource Planning (ERP)</div>
+
+        <form th:action="@{/attendance/save}" method="POST">
+
+            <input type="hidden" name="courseId" value="1">
+
+            <input type="hidden" name="attendanceDate" th:value="${todayDate}">
 
             <div class="data-table-container">
                 <table class="data-table">
                     <thead>
-                        <tr>
-                            <th>Student ID</th>
-                            <th>Student Name</th>
-                            <th>Attendance Status</th>
-                        </tr>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Attendance Status</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>STU1001</td>
-                            <td>Hiruni Weerasinghe</td>
-                            <td>
-                                <div class="radio-group">
-                                    <label><input type="radio" name="att1" value="P" checked> Present</label>
-                                    <label><input type="radio" name="att1" value="A"> Absent</label>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>STU1002</td>
-                            <td>Kasun Perera</td>
-                            <td>
-                                <div class="radio-group">
-                                    <label><input type="radio" name="att2" value="P" checked> Present</label>
-                                    <label><input type="radio" name="att2" value="A"> Absent</label>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr th:each="st : ${students}">
+
+                        <td>
+                            <span th:text="'STU' + ${st.studentId}">STU1001</span>
+                            <input type="hidden" name="studentIds" th:value="${st.studentId}">
+                        </td>
+
+                        <td th:text="${st.firstName} + ' ' + ${st.lastName}">Hiruni Weerasinghe</td>
+                        <td>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" th:name="'status_' + ${st.studentId}" value="Present" checked> Present
+                                </label>
+                                <label>
+                                    <input type="radio" th:name="'status_' + ${st.studentId}" value="Absent"> Absent
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="btn-container">
-                <button class="save-btn" id="saveAttendance">Save Attendance</button>
+                <button type="submit" class="save-btn" id="saveAttendance">Save Attendance</button>
             </div>
-        </section>
-    </main>
-
-    <script>
-        // පැමිණීමේ දත්ත සුරැකීමේ පාලක කේතය (Attendance Update Event Handler)
-        document.getElementById('saveAttendance').addEventListener('click', function() {
-            // සාර්ථක පණිවිඩය පෙන්වීම
-            alert('The attendance record for today has been successfully updated.');
-        });
-    </script>
+        </form>
+    </section>
+</main>
 </body>
 </html>

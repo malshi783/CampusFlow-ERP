@@ -21,7 +21,7 @@ public class Course {
     @Column(name="course_name",unique=true,nullable=false)
     private String CourseName;
 
-    @Column(name="credits",unique=true,nullable=false)
+    @Column(name="credits",nullable=false)
     private Integer credits;
 
     //Default Constructer

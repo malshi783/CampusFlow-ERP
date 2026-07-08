@@ -58,7 +58,9 @@ public class ExamController {
                     exam.setStudent(student);
                     exam.setCourse(course);
                     exam.setExamDate(examDate);
-                    exam.setMarksObtained(marksList[i]);
+
+                    // 👑 නිවැරදි කරන ලද පේළිය: marksList[i] වෙනුවට marksList.get(i) යෙදීම
+                    exam.setMarksObtained(marksList.get(i));
 
                     examRepository.save(exam);
                 }

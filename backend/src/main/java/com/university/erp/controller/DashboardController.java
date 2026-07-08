@@ -45,11 +45,6 @@ public class DashboardController {
         return "course-registration";
     }
 
-    // 6. Attendance
-    @GetMapping("/attendance")
-    public String showAttendanceForm() {
-        return "attendance";
-    }
 
     // 7. Exam Marks
     @GetMapping("/exam-marks")
