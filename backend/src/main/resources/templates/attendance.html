@@ -7,7 +7,7 @@
     <style>
         /* මූලික වර්ණ සහ විචල්‍යයන් (Theme Configurations) */
         :root {
-            --primary-dark: #003322;   /* තද කොළ පැහැති සයිඩ්බාර් එක සඳහා */
+            --primary-dark: #003322;   /* තද提ළ පැහැති සයිඩ්බාර් එක සඳහා */
             --primary-green: #004d33;  /* ප්‍රධාන වර්ණ සඳහා */
             --accent-green: #008055;   /* Hover විලාසිතා සඳහා */
             --bg-light: #f4f7f6;       /* ribbons */
@@ -249,6 +249,10 @@
         <h1>Attendance Management</h1>
     </div>
 
+    <div th:if="${param.success}" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; border: 1px solid #c3e6cb; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        ✓ Attendance Saved Successfully into Database!
+    </div>
+
     <section class="ui-card">
         <h2>Daily Attendance Sheet</h2>
         <div class="subject-tag">Subject: Enterprise Resource Planning (ERP)</div>
@@ -280,10 +284,18 @@
                         <td>
                             <div class="radio-group">
                                 <label>
-                                    <input type="radio" th:name="'status_' + ${st.studentId}" value="Present" checked> Present
+                                    <input type="radio"
+                                           th:name="'status_' + ${st.studentId}"
+                                           value="Present"
+                                           th:checked="${existingAttendance != null ? #lists.contains(existingAttendance.![studentId + '-' + status], st.studentId + '-Present') : true}">
+                                    Present
                                 </label>
                                 <label>
-                                    <input type="radio" th:name="'status_' + ${st.studentId}" value="Absent"> Absent
+                                    <input type="radio"
+                                           th:name="'status_' + ${st.studentId}"
+                                           value="Absent"
+                                           th:checked="${existingAttendance != null && #lists.contains(existingAttendance.![studentId + '-' + status], st.studentId + '-Absent')}">
+                                    Absent
                                 </label>
                             </div>
                         </td>

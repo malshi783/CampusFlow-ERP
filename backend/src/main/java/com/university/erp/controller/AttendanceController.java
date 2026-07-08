@@ -27,15 +27,19 @@ public class AttendanceController {
     @Autowired
     private CourseRepository courseRepository;
 
-    // 1. පිටුව මුලින්ම load වන විට ශිෂ්‍ය ලැයිස්තුව සහ අද දිනය ලබාදීම
+    // 1. පිටුව මුලින්ම load වන විට ශිෂ්‍ය ලැයිස්තුව, කෝස් ලැයිස්තුව සහ දැනටමත් ඇති ඇටෙන්ඩන්ස් දත්ත ලබාදීම
     @GetMapping
     public String showAttendancePage(Model model) {
         List<Student> students = studentRepository.findAll();
         List<Course> courses = courseRepository.findAll();
 
+        // 🌟 අද දිනට අදාළව දැනටමත් සේව් කරලා තියෙන ඇටෙන්ඩන්ස් ලැයිස්තුව ඩේටාබේස් එකෙන් කියවීම
+        List<Attendance> existingAttendance = attendanceRepository.findByAttendanceDate(LocalDate.now());
+
         model.addAttribute("students", students);
         model.addAttribute("courses", courses);
-        model.addAttribute("todayDate", LocalDate.now()); // HTML එකේ th:value="${todayDate}" සඳහා
+        model.addAttribute("todayDate", LocalDate.now());
+        model.addAttribute("existingAttendance", existingAttendance);
 
         return "attendance";
     }
@@ -69,7 +73,8 @@ public class AttendanceController {
                 }
             }
         }
-        // සාර්ථකව සේව් වූ පසු නැවතත් පිටුවටම හරවා යැවීම
+
+        // 👑 සාර්ථකව සේව් වූ පසු රතු ලේබල් වැරදි නැතුව ලස්සන සාර්ථක බැනර් එකක් පෙන්වීමට ?success කෑල්ල සහිතව පිටුවට හරවා යැවීම
         return "redirect:/attendance?success";
     }
 }
