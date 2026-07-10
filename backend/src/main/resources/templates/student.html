@@ -7,28 +7,26 @@
     <style>
         /* මූලික වර්ණ සහ විචල්‍යයන් (Theme Configurations) */
         :root {
-            --primary-dark: #003322;   /* තද කොළ පැහැති සයිඩ්බාර් එක සඳහා */
-            --primary-green: #004d33;  /* ප්‍රධාන බොත්තම් සහ ලින්ක්ස් සඳහා */
-            --accent-green: #008055;   /* Hover විලාසිතා සඳහා */
-            --bg-light: #f4f7f6;       /* ප්‍රධාන පසුබිම් වර්ණය */
+            --primary-dark: #003322;
+            --primary-green: #004d33;
+            --accent-green: #008055;
+            --bg-light: #f4f7f6;
             --white: #ffffff;
             --text-main: #333333;
             --text-muted: #666666;
             --border-color: #e0e0e0;
         }
 
-        /* මුළු පිටුවේම පිරිසැකසුම (Layout Reset) */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-light);
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            display: flex; /* Sidebar සහ Main Content එක ළඟින් තැබීමට */
+            display: flex;
             min-height: 100vh;
         }
 
-        /* වම්පස ඇති සංචාලන තීරුව (Sidebar Navigation Styles) */
         .sidebar {
             width: 260px;
             background-color: var(--primary-dark);
@@ -74,7 +72,6 @@
             transition: all 0.3s ease;
         }
 
-        /* දැනට සක්‍රීය පිටුව සහ Hover විලාසිතාව */
         .sidebar-menu a:hover, .sidebar-menu a.active {
             background-color: rgba(255, 255, 255, 0.1);
             color: var(--white);
@@ -104,15 +101,13 @@
             background-color: #b32424;
         }
 
-        /* දකුණුපස ඇති ප්‍රධාන අන්තර්ගතය (Main Content Container) */
         .main-content {
-            margin-left: 260px; /* Sidebar එකට ඉඩ තැබීම සඳහා */
+            margin-left: 260px;
             flex-grow: 1;
             padding: 40px;
             box-sizing: border-box;
         }
 
-        /* පිටුවේ ඉහළ ශීර්ෂය (Header Area) */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -126,7 +121,6 @@
             color: var(--primary-dark);
         }
 
-        /* පෝරමය සහ ලැයිස්තුව අඩංගු සුදු පැහැති කාඩ්පත් (Card Design) */
         .ui-card {
             background-color: var(--white);
             border-radius: 12px;
@@ -145,7 +139,6 @@
             padding-bottom: 12px;
         }
 
-        /* පෝරමයේ Grid සැකසුම (Two-Column Form Grid) */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -180,7 +173,6 @@
             background-color: var(--white);
         }
 
-        /* බොත්තම් විලාසිතා (Button Styles) */
         .btn-container {
             display: flex;
             justify-content: flex-end;
@@ -203,7 +195,6 @@
             background-color: var(--accent-green);
         }
 
-        /* ශිෂ්‍ය දත්ත වගුවේ විලාසිතා (Data Table Styles) */
         .data-table-container {
             overflow-x: auto;
         }
@@ -233,7 +224,6 @@
             background-color: #fcfdfe;
         }
 
-        /* සක්‍රීය/අක්‍රීය තත්ත්ව ලේබල් (Status Badges) */
         .status-badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -274,28 +264,23 @@
     <section class="ui-card">
         <h2>New Student Enrollment Form</h2>
 
-        <!-- Java Model variables වලට අනුව සකසන ලද Form එක -->
-        <form th:action="@{/students/add}" th:object="${student}" method="POST" id="studentForm">
+        <form th:action="@{/student/add}" th:object="${student}" method="POST" id="studentForm">
             <div class="form-grid">
-                <!-- First Name -->
                 <div class="form-group">
                     <label for="firstName">First Name</label>
                     <input type="text" id="firstName" th:field="*{firstName}" placeholder="Enter first name" required>
                 </div>
 
-                <!-- Last Name -->
                 <div class="form-group">
                     <label for="lastName">Last Name</label>
                     <input type="text" id="lastName" th:field="*{lastName}" placeholder="Enter last name" required>
                 </div>
 
-                <!-- Email -->
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" th:field="*{email}" placeholder="Enter email address" required>
                 </div>
 
-                <!-- Enrollment Date -->
                 <div class="form-group">
                     <label for="enrollmentDate">Enrollment Date</label>
                     <input type="date" id="enrollmentDate" th:field="*{enrollmentDate}" required>
@@ -321,7 +306,6 @@
                 </tr>
                 </thead>
                 <tbody id="studentTableBody">
-                <!-- ඩේටාබේස් එකේ දත්ත පෙන්වන නිවැරදි Thymeleaf Loop එක -->
                 <tr th:each="st : ${students}">
                     <td th:text="${st.studentId}">1</td>
                     <td th:text="${st.firstName} + ' ' + ${st.lastName}">John Smith</td>
