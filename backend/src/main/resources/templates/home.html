@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,13 +15,13 @@
             --text-main: #333333;
             --text-muted: #666666;
             --border-color: #e0e0e0;
-            
-            /* Card Color Palettes matching your reference layout styles */
+
+            /* Card Color Palettes - Modern Gradient Accents */
+            --color-dashboard: #00c288;
             --color-student: #ffb800;
             --color-course: #ff5c5c;
             --color-attendance: #925cff;
             --color-marks: #2da1f7;
-            --color-dashboard: #00c288;
         }
 
         body {
@@ -75,7 +75,7 @@
             background-color: #b32424;
         }
 
-        /* Centralized Main Portal Content Wrapper */
+        /* Portal Container */
         .portal-container {
             max-width: 1200px;
             margin: 40px auto;
@@ -120,7 +120,7 @@
             border-radius: 20px;
             padding: 30px;
             box-sizing: border-box;
-            height: 260px;
+            height: 240px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -177,7 +177,7 @@
 
         .card-body h2 {
             margin: 0 0 8px 0;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
         }
 
@@ -223,97 +223,97 @@
 </head>
 <body>
 
-    <header class="top-navbar">
-        <div class="brand">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span>University ERP Management Portal</span>
-        </div>
-        <div class="user-profile">
-            <span>Welcome, <strong>Yohani</strong></span>
-            <a href="login.html" class="logout-btn">Logout</a>
-        </div>
-    </header>
+<header class="top-navbar">
+    <div class="brand">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>University ERP Management Portal</span>
+    </div>
+    <div class="user-profile">
+        <span>Welcome, <strong>Campus Admin</strong></span>
+        <a th:href="@{/login}" class="logout-btn">Logout</a>
+    </div>
+</header>
 
-    <main class="portal-container">
-        <div class="portal-header">
-            <h1>System Applications Hub</h1>
-            <p>Select a workspace module card below to manage records, compile operations, or look up diagnostics.</p>
-        </div>
+<main class="portal-container">
+    <div class="portal-header">
+        <h1>System Applications Hub</h1>
+        <p>Select a operational workflow workspace card below to update databases, sync structures, or audit parameters.</p>
+    </div>
 
-        <div class="modules-grid">
-            
-            <a href="dashboard.html" class="module-link">
-                <div class="module-card m-dashboard">
-                    <div class="card-top">
-                        <span class="module-tag">Analytics</span>
-                        <div class="icon-box"><i class="fa-solid fa-chart-pie"></i></div>
-                    </div>
-                    <div class="card-body">
-                        <h2>Main Board</h2>
-                        <p>View administrative statistics graphs, growth rate tracking configurations, and logs.</p>
-                    </div>
-                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+    <div class="modules-grid">
+
+        <a th:href="@{/dashboard}" class="module-link">
+            <div class="module-card m-dashboard">
+                <div class="card-top">
+                    <span class="module-tag">Analytics</span>
+                    <div class="icon-box"><i class="fa-solid fa-chart-pie"></i></div>
                 </div>
-            </a>
-
-            <a href="student.html" class="module-link">
-                <div class="module-card m-student">
-                    <div class="card-top">
-                        <span class="module-tag">Registry</span>
-                        <div class="icon-box"><i class="fa-solid fa-user-graduate"></i></div>
-                    </div>
-                    <div class="card-body">
-                        <h2>Student Enrollment</h2>
-                        <p>Register new academic applicants, query profiles, and manage identity parameters.</p>
-                    </div>
-                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="card-body">
+                    <h2>Operational Board</h2>
+                    <p>View administrative metrics graphs, growth tracking indicators, and system diagnostic logs.</p>
                 </div>
-            </a>
+                <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+        </a>
 
-            <a href="course-registration.html" class="module-link">
-                <div class="module-card m-course">
-                    <div class="card-top">
-                        <span class="module-tag">Curriculum</span>
-                        <div class="icon-box"><i class="fa-solid fa-book-bookmark"></i></div>
-                    </div>
-                    <div class="card-body">
-                        <h2>Course Setup</h2>
-                        <p>Configure faculty module streams, track prerequisites, and organize active lecture lists.</p>
-                    </div>
-                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+        <a th:href="@{/student}" class="module-link">
+            <div class="module-card m-student">
+                <div class="card-top">
+                    <span class="module-tag">Registry</span>
+                    <div class="icon-box"><i class="fa-solid fa-user-graduate"></i></div>
                 </div>
-            </a>
-
-            <a href="attendance.html" class="module-link">
-                <div class="module-card m-attendance">
-                    <div class="card-top">
-                        <span class="module-tag">Operations</span>
-                        <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
-                    </div>
-                    <div class="card-body">
-                        <h2>Mark Attendance</h2>
-                        <p>Log active classroom check-in stats, record leaves, and audit global tracking metrics.</p>
-                    </div>
-                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="card-body">
+                    <h2>Student Registry</h2>
+                    <p>Enroll new academic applicants into the core database, edit profiles, and trace identity tables.</p>
                 </div>
-            </a>
+                <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+        </a>
 
-            <a href="exam-marks.html" class="module-link">
-                <div class="module-card m-marks">
-                    <div class="card-top">
-                        <span class="module-tag">Evaluation</span>
-                        <div class="icon-box"><i class="fa-solid fa-file-invoice"></i></div>
-                    </div>
-                    <div class="card-body">
-                        <h2>Exam Marks</h2>
-                        <p>Process grade points entry forms, calculate GPA pass rates, and review final transcripts.</p>
-                    </div>
-                    <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+        <a th:href="@{/course-registration}" class="module-link">
+            <div class="module-card m-course">
+                <div class="card-top">
+                    <span class="module-tag">Curriculum</span>
+                    <div class="icon-box"><i class="fa-solid fa-book-bookmark"></i></div>
                 </div>
-            </a>
+                <div class="card-body">
+                    <h2>Course Registration</h2>
+                    <p>Map academic modules to specific student terms, filter batch courses, and authorize slots.</p>
+                </div>
+                <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+        </a>
 
-        </div>
-    </main>
+        <a th:href="@{/attendance}" class="module-link">
+            <div class="module-card m-attendance">
+                <div class="card-top">
+                    <span class="module-tag">Operations</span>
+                    <div class="icon-box"><i class="fa-solid fa-calendar-check"></i></div>
+                </div>
+                <div class="card-body">
+                    <h2>Mark Attendance</h2>
+                    <p>Process daily classroom check-in stats, record leaves, and audit global integration thresholds.</p>
+                </div>
+                <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+        </a>
+
+        <a th:href="@{/exams}" class="module-link">
+            <div class="module-card m-marks">
+                <div class="card-top">
+                    <span class="module-tag">Evaluation</span>
+                    <div class="icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                </div>
+                <div class="card-body">
+                    <h2>Examination Marks</h2>
+                    <p>Process evaluation grade vectors, compile overall GPA conversions, and review final transcripts.</p>
+                </div>
+                <div class="launch-indicator"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+        </a>
+
+    </div>
+</main>
 
 </body>
 </html>

@@ -1,36 +1,54 @@
 package com.university.erp.controller;
 
 import com.university.erp.model.Course;
+import com.university.erp.model.CourseRegistration;
+import com.university.erp.model.Student;
 import com.university.erp.repository.CourseRepository;
+import com.university.erp.repository.CourseRegistrationRepository;
+import com.university.erp.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("/courses")
+@RequestMapping("/course-registration")
 public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
 
-    // 1. අලුත් Course එකක් ඩේටාබේස් එකට සේව් කිරීම (POST Mapping)
-    @PostMapping("/add")
-    public String addCourse(@ModelAttribute Course course) {
-        // Form එකෙන් එන Course Code එක Capital අකුරින්ම සේව් වීමට
-        if (course.getCourseCode() != null) {
-            course.setCourseCode(course.getCourseCode().toUpperCase().trim());
-        }
+    @Autowired
+    private StudentRepository studentRepository;
 
-        courseRepository.save(course);
+    @Autowired
+    private CourseRegistrationRepository courseRegistrationRepository;
 
-        // දත්ත සේව් වූ පසු නැවතත් Course Registration පිටුවටම හරවා යැවීම (Redirect)
-        return "redirect:/course-registration";
+    @GetMapping
+    public String showRegistrationPage(Model model) {
+        model.addAttribute("courses", courseRepository.findAll());
+        return "course-registration";
     }
 
-    // 2. අවශ්‍ය නම් Course එකක් මකා දැමීම සඳහා (Optional - Delete Feature)
-    @GetMapping("/delete/{id}")
-    public String deleteCourse(@PathVariable("id") Long courseId) {
-        courseRepository.deleteById(courseId);
-        return "redirect:/course-registration";
+    @PostMapping("/register")
+    public String registerCourses(
+            @RequestParam("studentId") Long studentId,
+            @RequestParam("semester") String semester,
+            @RequestParam(value = "selectedCourses", required = false) List<Long> selectedCourses) {
+
+        Student student = studentRepository.findById(studentId).orElse(null);
+
+        if (student != null && selectedCourses != null) {
+            for (Long cId : selectedCourses) {
+                Course course = courseRepository.findById(cId).orElse(null);
+                if (course != null) {
+                    CourseRegistration reg = new CourseRegistration(student, course, semester);
+                    courseRegistrationRepository.save(reg);
+                }
+            }
+        }
+        return "redirect:/course-registration?success";
     }
 }

@@ -34,7 +34,7 @@ public class StudentController {
 
         // 👑 ඔයාගේ Model එකේ තියෙන සැබෑ නම වන 'setEnrollment' ලෙස නිවැරදි කළා යාළුවා:
         if (student.getEnrollmentDate() == null) {
-            student.setEnrollment(LocalDate.now());
+            student.setEnrollmentDate(LocalDate.now());
         }
 
         studentRepository.save(student);

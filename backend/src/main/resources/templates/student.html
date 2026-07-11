@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="si" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>University ERP - Student Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        /* මූලික වර්ණ සහ විචල්‍යයන් (Theme Configurations) */
         :root {
             --primary-dark: #003322;
             --primary-green: #004d33;
@@ -14,304 +14,115 @@
             --white: #ffffff;
             --text-main: #333333;
             --text-muted: #666666;
-            --border-color: #e0e0e0;
+            --border-color: #e2e8f0;
         }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-light); color: var(--text-main); margin: 0; padding: 0; display: flex; min-height: 100vh; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            min-height: 100vh;
-        }
+        /* Sidebar Styling */
+        .sidebar { width: 260px; background-color: var(--primary-dark); color: var(--white); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; padding: 20px 0; }
+        .sidebar .brand { font-size: 22px; font-weight: bold; padding: 10px 25px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 12px; color: #b3ccc0; text-decoration: none; padding: 14px 25px; font-size: 15px; font-weight: 500; transition: all 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: rgba(255,255,255,0.08); color: var(--white); border-left: 4px solid #00ffaa; padding-left: 21px; }
+        .sidebar-footer { padding: 20px 25px; }
+        .logout-btn { display: block; background-color: #e53e3e; color: var(--white); text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+        .logout-btn:hover { background-color: #c53030; }
 
-        .sidebar {
-            width: 260px;
-            background-color: var(--primary-dark);
-            color: var(--white);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            padding: 20px 0;
-            box-sizing: border-box;
-        }
+        /* Main Content Styling */
+        .main-content { margin-left: 260px; flex-grow: 1; padding: 40px; max-width: 1200px; }
+        .page-header h1 { margin: 0 0 5px 0; font-size: 28px; color: var(--primary-dark); }
+        .page-header p { margin: 0 0 30px 0; color: var(--text-muted); font-size: 14px; }
 
-        .sidebar .brand {
-            font-size: 22px;
-            font-weight: bold;
-            padding: 10px 25px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        /* Success Notification Alert Banner */
+        .alert-success { background-color: #def7ec; color: #03543f; padding: 16px 20px; border-radius: 10px; border: 1px solid #bcefdb; margin-bottom: 25px; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
 
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-        }
+        /* Modern UI Cards */
+        .ui-card { background-color: var(--white); border-radius: 16px; padding: 30px; margin-bottom: 30px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .ui-card h2 { margin: 0 0 25px 0; font-size: 18px; color: var(--primary-green); display: flex; align-items: center; gap: 10px; }
 
-        .sidebar-menu li {
-            margin-bottom: 5px;
-        }
+        /* Form Grids */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #4a5568; }
+        .form-group input { padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; background-color: #f8fafc; transition: all 0.2s; outline: none; }
+        .form-group input:focus { border-color: var(--accent-green); background-color: var(--white); box-shadow: 0 0 0 3px rgba(0,128,85,0.15); }
 
-        .sidebar-menu a {
-            display: block;
-            color: #b3ccc0;
-            text-decoration: none;
-            padding: 12px 25px;
-            font-size: 15px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
+        .btn-container { display: flex; justify-content: flex-end; margin-top: 25px; }
 
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-            border-left: 4px solid #00ffaa;
-            padding-left: 21px;
-        }
+        /* User Friendly Button Styling */
+        .submit-btn { background-color: var(--primary-green); color: var(--white); padding: 14px 35px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0, 77, 51, 0.15); }
+        .submit-btn:hover { background-color: var(--accent-green); }
 
-        .sidebar-footer {
-            padding: 20px 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        /* Table Styling */
+        .data-table-container { overflow-x: auto; margin-top: 10px; }
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .data-table th { background-color: #f8fafc; color: #475569; padding: 16px; font-size: 13px; font-weight: 600; border-bottom: 2px solid #edf2f7; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-table td { padding: 16px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #334155; }
+        .data-table tr:hover { background-color: #f8fafc; }
 
-        .logout-btn {
-            display: block;
-            background-color: #cc3333;
-            color: var(--white);
-            text-align: center;
-            padding: 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-
-        .logout-btn:hover {
-            background-color: #b32424;
-        }
-
-        .main-content {
-            margin-left: 260px;
-            flex-grow: 1;
-            padding: 40px;
-            box-sizing: border-box;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .page-header h1 {
-            margin: 0;
-            font-size: 28px;
-            color: var(--primary-dark);
-        }
-
-        .ui-card {
-            background-color: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border-color);
-        }
-
-        .ui-card h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-size: 20px;
-            color: var(--primary-green);
-            border-bottom: 2px solid var(--bg-light);
-            padding-bottom: 12px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
-        .form-group input, .form-group select {
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            background-color: #fafafa;
-            transition: border-color 0.3s;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-green);
-            background-color: var(--white);
-        }
-
-        .btn-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 25px;
-        }
-
-        .submit-btn {
-            background-color: var(--primary-green);
-            color: var(--white);
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .submit-btn:hover {
-            background-color: var(--accent-green);
-        }
-
-        .data-table-container {
-            overflow-x: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        .data-table th {
-            background-color: #f8faf9;
-            color: var(--text-muted);
-            padding: 14px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .data-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-        }
-
-        .data-table tr:hover {
-            background-color: #fcfdfe;
-        }
-
-        .status-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .status-active {
-            background-color: #e6f7ed;
-            color: #1e7e34;
-        }
+        /* Custom Status Badge */
+        .badge { padding: 6px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; background-color: #def7ec; color: #03543f; }
     </style>
 </head>
 <body>
-
 <aside class="sidebar">
-    <div class="brand">
-        <span>University ERP</span>
-    </div>
+    <div class="brand"><i class="fa-solid fa-graduation-cap"></i> <span>University ERP</span></div>
     <ul class="sidebar-menu">
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/student" class="active">Students</a></li>
-        <li><a href="/course-registration">Courses</a></li>
-        <li><a href="/attendance">Attendance</a></li>
-        <li><a href="/exam-marks">Marks</a></li>
+        <li><a th:href="@{/dashboard}"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+        <li><a th:href="@{/student}" class="active"><i class="fa-solid fa-user-graduate"></i> Students</a></li>
+        <li><a th:href="@{/course-registration}"><i class="fa-solid fa-book"></i> Courses</a></li>
+        <li><a th:href="@{/attendance}"><i class="fa-solid fa-calendar-check"></i> Attendance</a></li>
+        <li><a th:href="@{/exams}"><i class="fa-solid fa-file-invoice"></i> Marks</a></li>
     </ul>
-    <div class="sidebar-footer">
-        <a href="/login" class="logout-btn">Logout</a>
-    </div>
+    <div class="sidebar-footer"><a th:href="@{/login}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></div>
 </aside>
 
 <main class="main-content">
     <div class="page-header">
-        <h1>Students Management</h1>
+        <h1>Student Registry Management</h1>
+        <p>Configure academic profile configurations and register admissions to the core relational tables.</p>
+    </div>
+
+    <div th:if="${param.success}" class="alert-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Student record has been successfully enrolled into the ERP system!</span>
     </div>
 
     <section class="ui-card">
-        <h2>New Student Enrollment Form</h2>
-
-        <form th:action="@{/student/add}" th:object="${student}" method="POST" id="studentForm">
+        <h2><i class="fa-solid fa-user-plus"></i> New Student Registration</h2>
+        <form th:action="@{/student/add}" th:object="${student}" method="POST">
             <div class="form-grid">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" th:field="*{firstName}" placeholder="Enter first name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" th:field="*{lastName}" placeholder="Enter last name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" th:field="*{email}" placeholder="Enter email address" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="enrollmentDate">Enrollment Date</label>
-                    <input type="date" id="enrollmentDate" th:field="*{enrollmentDate}" required>
-                </div>
+                <div class="form-group"><label>First Name</label><input type="text" th:field="*{firstName}" placeholder="e.g. Malshi" required></div>
+                <div class="form-group"><label>Last Name</label><input type="text" th:field="*{lastName}" placeholder="e.g. Dewmini" required></div>
+                <div class="form-group"><label>Email Address</label><input type="email" th:field="*{email}" placeholder="username@students.nsbm.ac.lk" required></div>
+                <div class="form-group"><label>Enrollment Date</label><input type="date" th:field="*{enrollmentDate}" required></div>
             </div>
             <div class="btn-container">
-                <button type="submit" class="submit-btn">Register Student</button>
+                <button type="submit" class="submit-btn"><i class="fa-solid fa-user-check"></i> Admit Student</button>
             </div>
         </form>
     </section>
 
     <section class="ui-card">
-        <h2>Registered Student Records</h2>
+        <h2><i class="fa-solid fa-address-book"></i> Active Student Profiles</h2>
         <div class="data-table-container">
             <table class="data-table">
                 <thead>
                 <tr>
                     <th>Student ID</th>
                     <th>Full Name</th>
-                    <th>Email</th>
+                    <th>Email Address</th>
                     <th>Enrollment Date</th>
                     <th>Status</th>
                 </tr>
                 </thead>
-                <tbody id="studentTableBody">
+                <tbody>
                 <tr th:each="st : ${students}">
-                    <td th:text="${st.studentId}">1</td>
-                    <td th:text="${st.firstName} + ' ' + ${st.lastName}">John Smith</td>
-                    <td th:text="${st.email}">john.smith@email.com</td>
-                    <td th:text="${st.enrollmentDate}">2026-07-05</td>
-                    <td><span class="status-badge status-active">Active</span></td>
+                    <td th:text="'STU-' + ${st.studentId}" style="font-weight: 600; color: var(--primary-green);">STU-1</td>
+                    <td th:text="${st.firstName} + ' ' + ${st.lastName}">John Doe</td>
+                    <td th:text="${st.email}">email@uni.lk</td>
+                    <td th:text="${st.enrollmentDate}">2026-07-06</td>
+                    <td><span class="badge">Active</span></td>
                 </tr>
                 </tbody>
             </table>

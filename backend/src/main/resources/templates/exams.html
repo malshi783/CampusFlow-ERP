@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University ERP - Attendance Management</title>
+    <title>University ERP - Evaluation Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root { --primary-dark: #003322; --primary-green: #004d33; --accent-green: #008055; --bg-light: #f4f7f6; --white: #ffffff; --text-main: #333333; --text-muted: #666666; --border-color: #e0e0e0; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-light); color: var(--text-main); margin: 0; padding: 0; display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background-color: var(--primary-dark); color: var(--white); display: fixed; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; padding: 20px 0; }
+        .sidebar { width: 260px; background-color: var(--primary-dark); color: var(--white); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; padding: 20px 0; }
         .sidebar .brand { font-size: 22px; font-weight: bold; padding: 10px 25px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
         .sidebar-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
         .sidebar-menu a { display: block; color: #b3ccc0; text-decoration: none; padding: 12px 25px; font-size: 15px; transition: all 0.3s; }
@@ -16,14 +16,13 @@
         .sidebar-footer { padding: 20px 25px; border-top: 1px solid rgba(255,255,255,0.1); }
         .logout-btn { display: block; background-color: #cc3333; color: var(--white); text-align: center; padding: 10px; border-radius: 6px; text-decoration: none; }
         .main-content { margin-left: 260px; flex-grow: 1; padding: 40px; }
-        .ui-card { background-color: var(--white); border-radius: 12px; padding: 30px; border: 1px solid var(--border-color); }
-        .ui-card h2 { margin: 0 0 8px 0; font-size: 20px; color: var(--primary-green); }
-        .data-table { width: 100%; border-collapse: collapse; text-align: left; margin-top: 20px; }
-        .data-table th { background-color: #f8faf9; color: var(--text-muted); padding: 14px 16px; border-bottom: 2px solid var(--border-color); }
-        .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-        .radio-group { display: flex; gap: 20px; }
-        .btn-container { display: flex; justify-content: flex-end; margin-top: 25px; }
-        .save-btn { background-color: var(--primary-green); color: var(--white); padding: 12px 30px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .ui-card { background-color: var(--white); border-radius: 12px; padding: 25px; border: 1px solid var(--border-color); }
+        .ui-card h2 { margin: 0 0 20px 0; font-size: 18px; color: var(--primary-green); border-bottom: 2px solid var(--bg-light); padding-bottom: 10px; }
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .data-table th { background-color: #f8faf9; color: var(--text-muted); padding: 12px 14px; border-bottom: 2px solid var(--border-color); }
+        .data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        .input-mark { width: 80px; padding: 6px; border: 1px solid var(--border-color); border-radius: 4px; }
+        .submit-btn { background-color: var(--primary-green); color: var(--white); padding: 12px 30px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; float: right; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -33,37 +32,32 @@
         <li><a th:href="@{/dashboard}">Dashboard</a></li>
         <li><a th:href="@{/student}">Students</a></li>
         <li><a th:href="@{/course-registration}">Courses</a></li>
-        <li><a th:href="@{/attendance}" class="active">Attendance</a></li>
-        <li><a th:href="@{/exams}">Marks</a></li>
+        <li><a th:href="@{/attendance}">Attendance</a></li>
+        <li><a th:href="@{/exams}" class="active">Marks</a></li>
     </ul>
     <div class="sidebar-footer"><a th:href="@{/login}" class="logout-btn">Logout</a></div>
 </aside>
 <main class="main-content">
-    <h1>Operational Session Tracking</h1>
+    <h1>Examination & Grading Management</h1>
     <div th:if="${param.success}" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        ✓ Session Statistics Logged into Core DB!
+        ✓ GPA Assessment Transcripts Compiled Successfully!
     </div>
     <section class="ui-card">
-        <h2>Daily Attendance Sheets</h2>
-        <form th:action="@{/attendance/save}" method="POST">
+        <h2>Batch Evaluation Marks Entry</h2>
+        <form th:action="@{/exams/save}" method="POST">
             <input type="hidden" name="courseId" value="1">
-            <input type="hidden" name="attendanceDate" th:value="${todayDate}">
+            <input type="hidden" name="examDate" th:value="${examDate}">
             <table class="data-table">
-                <thead><tr><th>Record Index</th><th>Student Identification</th><th>Session Status</th></tr></thead>
+                <thead><tr><th>Index ID</th><th>Student Identity</th><th>Obtained Marks (0-100)</th></tr></thead>
                 <tbody>
                 <tr th:each="st : ${students}">
                     <td><span th:text="'STU-' + ${st.studentId}">STU</span><input type="hidden" name="studentIds" th:value="${st.studentId}"></td>
                     <td th:text="${st.firstName} + ' ' + ${st.lastName}">Student</td>
-                    <td>
-                        <div class="radio-group">
-                            <label><input type="radio" th:name="'status_' + ${st.studentId}" value="Present" checked> Present</label>
-                            <label><input type="radio" th:name="'status_' + ${st.studentId}" value="Absent"> Absent</label>
-                        </div>
-                    </td>
+                    <td><input type="number" name="marks" class="input-mark" min="0" max="100" value="75" required></td>
                 </tr>
                 </tbody>
             </table>
-            <div class="btn-container"><button type="submit" class="save-btn">Push Records</button></div>
+            <button type="submit" class="submit-btn">Commit Grades</button>
         </form>
     </section>
 </main>

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/exams")
+@RequestMapping("/exams") // 👑 /exams ලෙස නිවැරදිව map කර ඇත
 public class ExamController {
 
     @Autowired
@@ -36,10 +36,10 @@ public class ExamController {
         model.addAttribute("courses", courses);
         model.addAttribute("examDate", LocalDate.now());
 
-        return "exam-marks";
+        return "exams"; // 👑 Rename කරන ලද exams.html පිටුව ලෝඩ් කරයි
     }
 
-    @PostMapping("/save")
+    @PostMapping("/save") // 👑 /exams/save ලෙස නිවැරදිව වැඩ කරයි
     public String saveExamMarks(
             @RequestParam("courseId") Long courseId,
             @RequestParam("examDate") String examDateStr,
@@ -49,7 +49,7 @@ public class ExamController {
         Course course = courseRepository.findById(courseId).orElse(null);
         LocalDate examDate = LocalDate.parse(examDateStr);
 
-        if (course != null && studentIds.size() == marksList.size()) {
+        if (course != null && studentIds != null && marksList != null && studentIds.size() == marksList.size()) {
             for (int i = 0; i < studentIds.size(); i++) {
                 Student student = studentRepository.findById(studentIds.get(i)).orElse(null);
 
@@ -58,8 +58,6 @@ public class ExamController {
                     exam.setStudent(student);
                     exam.setCourse(course);
                     exam.setExamDate(examDate);
-
-                    // 👑 නිවැරදි කරන ලද පේළිය: marksList[i] වෙනුවට marksList.get(i) යෙදීම
                     exam.setMarksObtained(marksList.get(i));
 
                     examRepository.save(exam);
@@ -67,6 +65,7 @@ public class ExamController {
             }
         }
 
+        // 👑 සාර්ථකව සේව් වූ පසු ?success කෑල්ල සහිතව පිටුවට හරවා යැවීම (Success Banner එක වැඩ කරන්න)
         return "redirect:/exams?success";
     }
 }

@@ -27,30 +27,21 @@ public class AttendanceController {
     @Autowired
     private CourseRepository courseRepository;
 
-    // 1. පිටුව මුලින්ම load වන විට ශිෂ්‍ය ලැයිස්තුව, කෝස් ලැයිස්තුව සහ දැනටමත් ඇති ඇටෙන්ඩන්ස් දත්ත ලබාදීම
     @GetMapping
     public String showAttendancePage(Model model) {
-        List<Student> students = studentRepository.findAll();
-        List<Course> courses = courseRepository.findAll();
-
-        // 🌟 අද දිනට අදාළව දැනටමත් සේව් කරලා තියෙන ඇටෙන්ඩන්ස් ලැයිස්තුව ඩේටාබේස් එකෙන් කියවීම
-        List<Attendance> existingAttendance = attendanceRepository.findByAttendanceDate(LocalDate.now());
-
-        model.addAttribute("students", students);
-        model.addAttribute("courses", courses);
+        model.addAttribute("students", studentRepository.findAll());
+        model.addAttribute("courses", courseRepository.findAll());
         model.addAttribute("todayDate", LocalDate.now());
-        model.addAttribute("existingAttendance", existingAttendance);
-
+        model.addAttribute("existingAttendance", attendanceRepository.findByAttendanceDate(LocalDate.now()));
         return "attendance";
     }
 
-    // 2. 👑 HTML එකෙන් එන dynamic රේඩියෝ බොත්තම් (status_1, status_2) කියවා සේව් කරන මෙතඩ් එක
     @PostMapping("/save")
     public String saveAttendance(
             @RequestParam("courseId") Long courseId,
             @RequestParam("attendanceDate") String dateStr,
             @RequestParam("studentIds") List<Long> studentIds,
-            jakarta.servlet.http.HttpServletRequest request) { // HttpServletRequest මඟින් dynamic parameters කියවයි
+            jakarta.servlet.http.HttpServletRequest request) {
 
         Course course = courseRepository.findById(courseId).orElse(null);
         LocalDate date = LocalDate.parse(dateStr);
@@ -58,23 +49,14 @@ public class AttendanceController {
         if (course != null && studentIds != null) {
             for (Long sId : studentIds) {
                 Student student = studentRepository.findById(sId).orElse(null);
-
-                // 👑 HTML එකේ තියෙන 'status_1', 'status_2' අගයන් වෙන වෙනම කියවා ගැනීම
                 String currentStatus = request.getParameter("status_" + sId);
 
                 if (student != null && currentStatus != null) {
-                    Attendance attendance = new Attendance();
-                    attendance.setStudentId(student.getStudentId());
-                    attendance.setCourseId(course.getCourseId());
-                    attendance.setAttendanceDate(date);
-                    attendance.setStatus(currentStatus);
-
+                    Attendance attendance = new Attendance(student, course, date, currentStatus);
                     attendanceRepository.save(attendance);
                 }
             }
         }
-
-        // 👑 සාර්ථකව සේව් වූ පසු රතු ලේබල් වැරදි නැතුව ලස්සන සාර්ථක බැනර් එකක් පෙන්වීමට ?success කෑල්ල සහිතව පිටුවට හරවා යැවීම
         return "redirect:/attendance?success";
     }
 }
